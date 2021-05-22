@@ -18,11 +18,11 @@ public class BinaryConstraint<T1, T2> {
         this.condition = condition;
     }
 
-    public static <T1, T2> BinaryConstraint of(Variable<T1> x, Variable<T2> y, BiPredicate<T1, T2> condition) {
+    public static <T1, T2> BinaryConstraint<T1, T2> of(Variable<T1> x, Variable<T2> y, BiPredicate<T1, T2> condition) {
         return new BinaryConstraint<>(x, y, condition);
     }
 
-    public static <T2, T1> BinaryConstraint reverseOf(BinaryConstraint<T1, T2> constraint) {
+    public static <T2, T1> BinaryConstraint<T2, T1> reverseOf(BinaryConstraint<T1, T2> constraint) {
         return BinaryConstraint.of(constraint.y, constraint.x, (a, b) -> constraint.condition.test(b, a));
     }
 

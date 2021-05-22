@@ -22,7 +22,6 @@ public class Problem extends LinkedList<BinaryConstraint<?, ?>> {
 
     public String toString(List<Variable<?>> variables, Collection<Value> assignments) {
         StringBuilder sb = new StringBuilder();
-        int i = 1;
         for (Variable<?> variable : variables) {
             sb.append(variable.getName()).append(".) ");
             for (Value v : variable.values()) {

@@ -31,7 +31,7 @@ public class AC4 {
         while (!queue.isEmpty()) {
             Value m = queue.removeFirst();
             for (Value p : supports.getOrDefault(m, EMPTY)) {
-                Pair ck = Pair.of(p, m.getVariable());
+                Pair<Value,Variable<?>> ck = Pair.of(p, m.getVariable());
                 int count = counter.compute(ck, (k, v) -> (v - 1));
                 if (count == 0) {
                     if (p.delete()) {
