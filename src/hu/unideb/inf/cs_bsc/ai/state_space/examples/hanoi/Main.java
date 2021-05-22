@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         HanoiProblem problem = new HanoiProblem(4);
-        Algorithm<HanoiState, HanoiOperator> algorithm = new BreadthFirstSearch(GRAPH_SEARCH);
+        Algorithm<HanoiState, HanoiOperator> algorithm = new BreadthFirstSearch<>(GRAPH_SEARCH);
         Optional<Solution<HanoiState, HanoiOperator>> solution = algorithm.findSolution(problem);
         if (solution.isPresent()) {
             HanoiState state = problem.newStartState();

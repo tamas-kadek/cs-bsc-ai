@@ -20,9 +20,7 @@ public class Main {
         for (Algorithm<QueenState, QueenOperator> algorithm: algorithms) {
             System.out.println(algorithm.getClass().getSimpleName());
             Optional<Solution<QueenState, QueenOperator>> solution = algorithm.findSolution(problem);
-            if (solution.isPresent()) {
-                System.out.println(solution.get());
-            }
+            solution.ifPresent(System.out::println);
         }
     }
 

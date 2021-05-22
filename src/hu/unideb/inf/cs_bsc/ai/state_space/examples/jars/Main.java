@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static hu.unideb.inf.cs_bsc.ai.state_space.algorithms.SearchStrategy.TREE_SEARCH;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -17,11 +15,9 @@ public class Main {
         algorithms.add(new DepthFirstSearch<>(SearchStrategy.GRAPH_SEARCH));
         algorithms.add(new IterativeDeepening<>());
 
-        for ( Algorithm algorithm: algorithms ) {
+        for ( Algorithm<JarState, JarOperator> algorithm: algorithms ) {
             Optional<Solution<JarState, JarOperator>> solution = algorithm.findSolution(problem);
-            if (solution.isPresent()) {
-                System.out.println(solution.get());
-            }
+            solution.ifPresent(System.out::println);
         }
 
     }
