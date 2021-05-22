@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Solution<S extends State, O extends Operator<S>> implements Iterable<O> {
 
-    List<O> operators;
+    private final List<O> operators;
 
-    Solution(List<O> operators) {
+    public Solution(List<O> operators) {
         this.operators = operators;
     }
 
@@ -19,4 +19,12 @@ public class Solution<S extends State, O extends Operator<S>> implements Iterabl
         return operators.iterator();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (O operator : operators) {
+            stringBuilder.append(stringBuilder.length() > 0 ? " -> " : "").append(operator);
+        }
+        return stringBuilder.toString();
+    }
 }

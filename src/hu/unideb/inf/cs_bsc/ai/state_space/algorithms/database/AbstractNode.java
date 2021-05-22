@@ -1,12 +1,12 @@
-package hu.unideb.inf.cs_bsc.ai.state_space.algorithms;
+package hu.unideb.inf.cs_bsc.ai.state_space.algorithms.database;
 
+import hu.unideb.inf.cs_bsc.ai.state_space.algorithms.Solution;
 import hu.unideb.inf.cs_bsc.ai.state_space.representation.Operator;
 import hu.unideb.inf.cs_bsc.ai.state_space.representation.State;
-import hu.unideb.inf.cs_bsc.ai.state_space.representation.Successor;
 
 import java.util.LinkedList;
 
-abstract class AbstractNode<S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> {
+public abstract class AbstractNode<S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> {
 
     private final S state;
 
@@ -32,7 +32,9 @@ abstract class AbstractNode<S extends State, O extends Operator<S>, N extends Ab
         return parent;
     }
 
-    public abstract N newChild(Successor<S, O> successor);
+    public boolean isTerminal() {
+        return state.isGoal();
+    }
 
     public Solution<S, O> toSolution() {
         LinkedList<O> path = new LinkedList<>();

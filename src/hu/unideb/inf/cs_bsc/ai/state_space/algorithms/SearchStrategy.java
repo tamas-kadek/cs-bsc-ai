@@ -1,19 +1,26 @@
 package hu.unideb.inf.cs_bsc.ai.state_space.algorithms;
 
+import hu.unideb.inf.cs_bsc.ai.state_space.algorithms.database.AbstractNode;
+import hu.unideb.inf.cs_bsc.ai.state_space.algorithms.database.Frontier;
+import hu.unideb.inf.cs_bsc.ai.state_space.algorithms.database.NodeBuilder;
 import hu.unideb.inf.cs_bsc.ai.state_space.representation.Operator;
 import hu.unideb.inf.cs_bsc.ai.state_space.representation.Problem;
 import hu.unideb.inf.cs_bsc.ai.state_space.representation.State;
-import hu.unideb.inf.cs_bsc.ai.state_space.representation.Successor;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public enum SearchStrategy {
 
     TREE_SEARCH {
-        public <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> N run(Problem<S, O> p, Frontier<N> frontier) {
+        public <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> N findGoal(Problem<S, O> p, Supplier<Frontier<N>> frontierBuilder, NodeBuilder<S, O, N> nodeBuilder) {
+            // DATABASE:
+            Frontier<N> frontier = frontierBuilder.get();
             // CONTROLLER:
-            // Supposing that the frontier has initialized with the help of the start state
+            // 1.
+            frontier.add(nodeBuilder.buildFrom(p.newStartState()));
             while (true) {
                 // 2.
                 if (frontier.isEmpty()) {
@@ -22,22 +29,25 @@ public enum SearchStrategy {
                 // 3.
                 N selected = frontier.removeNext();
                 // 4.
-                if (selected.getState().isGoal()) {
+                if (selected.isTerminal()) {
                     return selected;
                 }
                 // 5.
-                for (Successor<S, O> successor : p.getSuccessors(selected.getState())) {
-                    frontier.add(selected.newChild(successor));
+                for (N child : nodeBuilder.children(selected, p)) {
+                    frontier.add(child);
                 }
             }
         }
     },
 
     GRAPH_SEARCH {
-        public <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> N run(Problem<S, O> p, Frontier<N> frontier) {
+        public <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> N findGoal(Problem<S, O> p, Supplier<Frontier<N>> frontierBuilder, NodeBuilder<S, O, N> nodeBuilder) {
+            // DATABASE:
+            Frontier<N> frontier = frontierBuilder.get();
             Set<S> explored = new HashSet<>();
             // CONTROLLER:
-            // Supposing that the frontier has initialized with the help of the start state
+            // 1.
+            frontier.add(nodeBuilder.buildFrom(p.newStartState()));
             while (true) {
                 // 2.
                 if (frontier.isEmpty()) {
@@ -46,20 +56,25 @@ public enum SearchStrategy {
                 // 3.
                 N selected = frontier.removeNext();
                 // 4.
-                if (selected.getState().isGoal()) {
+                if (selected.isTerminal()) {
                     return selected;
                 }
                 // 5.
                 if (!explored.contains(selected.getState())) {
                     explored.add(selected.getState());
-                    for (Successor<S, O> successor : p.getSuccessors(selected.getState())) {
-                        frontier.add(selected.newChild(successor));
+                    for (N child : nodeBuilder.children(selected, p)) {
+                        frontier.add(child);
                     }
                 }
             }
         }
     };
 
-    public abstract <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> N run(Problem<S, O> p, Frontier<N> frontier);
+    public abstract <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> N findGoal(Problem<S, O> p, Supplier<Frontier<N>> frontierBuilder, NodeBuilder<S, O, N> nodeBuilder);
+
+    public <S extends State, O extends Operator<S>, N extends AbstractNode<S, O, N>> Optional<Solution<S, O>> findSolution(Problem<S, O> problem, Supplier<Frontier<N>> frontierBuilder, NodeBuilder<S, O, N> nodeBuilder) {
+        N goal = findGoal(problem, frontierBuilder, nodeBuilder);
+        return goal == null ? Optional.empty() : Optional.of(goal.toSolution());
+    }
 
 }

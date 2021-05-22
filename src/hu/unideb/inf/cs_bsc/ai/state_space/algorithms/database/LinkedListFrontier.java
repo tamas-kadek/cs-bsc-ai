@@ -1,4 +1,4 @@
-package hu.unideb.inf.cs_bsc.ai.state_space.algorithms;
+package hu.unideb.inf.cs_bsc.ai.state_space.algorithms.database;
 
 import java.util.LinkedList;
 
